@@ -103,6 +103,10 @@ h1 {
     align-items: center;
 }
 
+a {
+    text-decoration: none;
+}
+
 .like-button {
     display: inline-block;
     padding: 16px;

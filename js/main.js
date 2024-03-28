@@ -58,36 +58,40 @@ const posts = [
 
 // --------- GENERATE POST ------------//
 
+const likedList = [];
 const postsContainer = document.getElementById('container');
 
 posts.forEach(singlePost => {
-    const postStructure = generatePost(singlePost);
+    const postStructure = generateUserPost(singlePost);
     
     postsContainer.innerHTML += postStructure; 
     
 });
 
-
-
 // --------- USER EVENTS ------------//
 
-const likedList = [];
 
-const allLikeBtn = document.querySelectorAll('js-like-button');
-const allCounterLike = document.querySelectorAll('js-likes-counter');
-allLikeBtn.forEach((singleLikeBtn,index) => {
-    singleLikeBtn.addEventListener('click', function(action) {
-        action.preventDefault();
+const allLikeBtn = document.querySelectorAll('.js-like-button');
+const allCounterLike = document.querySelectorAll('.js-likes-counter');
+
+allLikeBtn.forEach((singleLikeBtn, index) => {
+    singleLikeBtn.addEventListener('click', function(e) {
+
+        e.preventDefault();
 
         const relativeCounter = allCounterLike[index];
         const relativeCounterNumber= parseInt(relativeCounter.innerHTML);
 
-        if (!this.classList.contains('like-button--liked')){
+        if (!this.classList.contains('like-button--liked')) {
             this.classList.add('like-button--liked');
-            relativeCounter.innerHTML = relativeCounterNumber++;
+            relativeCounter.innerHTML = relativeCounterNumber + 1;
+
+            const thisPostId = parseInt(this.dataset.postid);
+            likedList.push(thisPostId);
+
         } else {
             this.classList.remove('like-button--liked');
-            relativeCounter.innerHTML = relativeCounterNumber--;
+            relativeCounter.innerHTML = relativeCounterNumber - 1;
         }
     });
 });
@@ -95,8 +99,8 @@ allLikeBtn.forEach((singleLikeBtn,index) => {
 
 // --------- FUNCTION ------------//
 
-function generatePost(posts) {
-    const {id,content, media, author, likes, created} = posts
+function generateUserPost(posts) {
+    const {id, content, media, author, likes, created} = posts
 
     const postStructure = `
             <div class="post">
@@ -107,7 +111,7 @@ function generatePost(posts) {
                         </div>
                         <div class="post-meta__data">
                             <div class="post-meta__author">${author.name}</div>
-                            <div class="post-meta__time">${dateEuropeanConvert}</div>
+                            <div class="post-meta__time">${dateEuropeanConvert(created)}</div>
                         </div>                    
                     </div>
                 </div>
@@ -131,7 +135,7 @@ function generatePost(posts) {
             </div>
             `;
 
-            return postStructure;
+        return postStructure;
 };  
 
 
@@ -139,7 +143,6 @@ function dateEuropeanConvert (created) {
 
     const createdDateArray = created.split('-');
     const europeanDate = createdDateArray.reverse().join('-');
-    console.log(europeanDate);
     return europeanDate;
 }
 
